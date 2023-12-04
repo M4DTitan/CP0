@@ -50,25 +50,60 @@ class _UserProfileInfoPageState extends State<UserProfileInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Informações de Perfil'),
+        backgroundColor: const Color(0xFF120F42), // Deep Blue
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Nome de Usuário'), // Substitua por nome de usuário real
-            const Text('E-mail do Usuário'), // Substitua por e-mail real
-            const Text('Instituição'), // Substitua por instituição real
-            const Text(
-                'Área de Formação'), // Substitua por área de formação real
-            const Text('Cidade'), // Substitua por cidade real
-            const Text('Idade'), // Substitua por idade real
-            const Text('Bio (máx. 250 caracteres)'), // Substitua por bio real
-            const SizedBox(height: 16),
+            _buildInfoRow(
+                'Nome de Usuário', 'JohnDoe'), // Replace with real username
+            _buildInfoRow('E-mail do Usuário',
+                'john.doe@example.com'), // Replace with real email
+            _buildInfoRow('Instituição',
+                'Universidade XYZ'), // Replace with real institution
+            _buildInfoRow('Área de Formação',
+                'Ciência da Computação'), // Replace with real field of study
+            _buildInfoRow('Cidade', 'Cidade ABC'), // Replace with real city
+            _buildInfoRow('Idade', '25 anos'), // Replace with real age
+            _buildInfoRow(
+              'Bio (máx. 250 caracteres)',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget velit euismod, rhoncus elit non, laoreet turpis.',
+            ), // Replace with real bio
+
+            const SizedBox(height: 20),
+
             Text('Projetos Publicados: $projectCount'),
             Text('Seguidores: $followersCount'),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0x0ff1d19b), // Light Blue
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Color(0xFF332BBD), // Dark Blue
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

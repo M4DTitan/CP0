@@ -1,7 +1,8 @@
-import 'package:cp0flutter/routes/routes.dart';
+// ignore_for_file: use_full_hex_values_for_flutter_colors
+
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cp0flutter/routes/routes.dart';
 
 class AllProjectsPage extends StatefulWidget {
   const AllProjectsPage({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class AllProjectsPage extends StatefulWidget {
 }
 
 class _AllProjectsPageState extends State<AllProjectsPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -20,89 +20,90 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Comunidade'),
+        backgroundColor: const Color(0xFF120F42), // #120F42
         actions: [
-          IconButton(
-            icon: const Icon(Icons.home),
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.initial);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.folder),
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.myProjects);
-            },
-          ),
+          _buildIconButton(Icons.home, Routes.initial),
+          _buildIconButton(Icons.folder, Routes.myProjects),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {},
           ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.profile);
-            },
-          ),
+          _buildIconButton(Icons.person, Routes.profile),
         ],
       ),
-      body: FutureBuilder<List<DocumentSnapshot>>(
-        future: _fetchAllProjects(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Erro ao carregar projetos: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            final projects = snapshot.data!;
-            return ListView.builder(
-              itemCount: projects.length,
-              itemBuilder: (context, index) {
-                final project = projects[index].data() as Map<String, dynamic>;
-                return Card(
-                  elevation: 3.0,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 16.0,
-                  ),
-                  child: ListTile(
-                    title: Text(project['title'] ?? 'Título não disponível'),
-                    subtitle: Text(
-                      project['description'] ?? 'Descrição não disponível',
-                    ),
-                    // Outros campos do projeto podem ser exibidos aqui
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Center(
-              child: Text('Nenhum projeto encontrado.'),
-            );
-          }
-        },
-      ),
+      body: _buildProjectsList(),
+      bottomNavigationBar: _buildFooter(),
     );
   }
 
-  Future<List<DocumentSnapshot>> _fetchAllProjects() async {
-    try {
-      User? user = _auth.currentUser;
-      if (user != null) {
-        QuerySnapshot querySnapshot = await _firestore
-            .collection('projects')
-            .where('authorId', isNotEqualTo: user.uid)
-            .get();
+  IconButton _buildIconButton(IconData icon, String route) {
+    return IconButton(
+      icon: Icon(icon),
+      color: const Color(0xFF1D19B), // #1D19B
+      onPressed: () {
+        Navigator.pushNamed(context, route);
+      },
+    );
+  }
 
-        return querySnapshot.docs;
-      }
-    } catch (e) {
-      // ignore: avoid_print
-      print('Erro ao buscar todos os projetos: $e');
-    }
-    return [];
+  Widget _buildProjectsList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('projects').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erro: ${snapshot.error}'));
+        } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          final projects = snapshot.data!.docs;
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              final project = projects[index].data() as Map<String, dynamic>;
+              return Card(
+                elevation: 3.0,
+                color: const Color(0xFF3C34E0), // #3C34E0
+                child: ListTile(
+                  title: Text(
+                    project['title'] ?? 'Título não disponível',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    project['description'] ?? 'Descrição não disponível',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              );
+            },
+          );
+        } else {
+          return const Center(child: Text('Nenhum projeto encontrado.'));
+        }
+      },
+    );
+  }
+
+  Widget _buildFooter() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      color: const Color(0xFF22294), // #22294
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '© 2023 Heldério Wafunga. Todos os direitos reservados.',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
