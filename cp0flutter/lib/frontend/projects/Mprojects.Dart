@@ -15,7 +15,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meus Projetos'),
+        title: Text('Meus '),
       ),
       body: FutureBuilder(
         future: _fetchUserProjects(),
