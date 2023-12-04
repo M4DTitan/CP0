@@ -1,9 +1,10 @@
+import 'package:cp0flutter/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AllProjectsPage extends StatefulWidget {
-  const AllProjectsPage({super.key});
+  const AllProjectsPage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -19,31 +20,68 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Comunidade'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              Navigator.pushNamed(context, Routes.initial);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.folder),
+            onPressed: () {
+              Navigator.pushNamed(context, Routes.myProjects);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, Routes.profile);
+            },
+          ),
+        ],
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<DocumentSnapshot>>(
         future: _fetchAllProjects(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasError) {
-            return Text('Erro: ${snapshot.error}');
-          } else if (snapshot.hasData) {
-            final List<DocumentSnapshot> projects =
-                snapshot.data as List<DocumentSnapshot>;
+            return Center(
+              child: Text('Erro ao carregar projetos: ${snapshot.error}'),
+            );
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            final projects = snapshot.data!;
             return ListView.builder(
               itemCount: projects.length,
               itemBuilder: (context, index) {
                 final project = projects[index].data() as Map<String, dynamic>;
-                return ListTile(
-                  title: Text(project['title'] ?? 'Título não disponível'),
-                  subtitle: Text(
-                      project['description'] ?? 'Descrição não disponível'),
-                  // Outros campos do projeto podem ser exibidos aqui
+                return Card(
+                  elevation: 3.0,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 16.0,
+                  ),
+                  child: ListTile(
+                    title: Text(project['title'] ?? 'Título não disponível'),
+                    subtitle: Text(
+                      project['description'] ?? 'Descrição não disponível',
+                    ),
+                    // Outros campos do projeto podem ser exibidos aqui
+                  ),
                 );
               },
             );
           } else {
-            return const Text('Nenhum projeto encontrado.');
+            return const Center(
+              child: Text('Nenhum projeto encontrado.'),
+            );
           }
         },
       ),

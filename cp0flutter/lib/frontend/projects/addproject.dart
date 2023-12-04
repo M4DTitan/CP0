@@ -17,7 +17,7 @@ class _UploadProjectPageState extends State<UploadProjectPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-Reference storageRef = _storage.ref().child('uploads/');
+  Reference storageRef = _storage.ref().child('uploads/');
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
@@ -26,26 +26,24 @@ Reference storageRef = _storage.ref().child('uploads/');
 
   String _error = "";
 
-
-
   Future<void> selectFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       // Use o plugin file_picker para selecionar um arquivo
-FilePickerResult? result = await FilePicker.platform.pickFiles();
+      FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-if (result != null) {
-  PlatformFile file = result.files.first;
+      if (result != null) {
+        PlatformFile file = result.files.first;
 
-  // Faça o upload do arquivo para o Firebase Storage
-  UploadTask task = storageRef.child(file.name).putData(file.bytes!);
+        // Faça o upload do arquivo para o Firebase Storage
+        UploadTask task = storageRef.child(file.name).putData(file.bytes!);
 
-  // Aguarde o término do upload
-  await task.whenComplete(() {
-    print('Upload bem-sucedido');
-  });
-}
+        // Aguarde o término do upload
+        await task.whenComplete(() {
+          print('Upload bem-sucedido');
+        });
+      }
     }
   }
 
