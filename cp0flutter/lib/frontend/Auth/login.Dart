@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
+import 'package:cp0flutter/components/components.dart';
+import 'package:cp0flutter/frontend/Auth/home_screen.dart';
+import 'package:cp0flutter/frontend/Auth/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Importe o Firestore
+import 'package:cp0flutter/constants.dart';
+import 'package:loading_overlay/loading_overlay.dart'; // Importe o Firestore
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
