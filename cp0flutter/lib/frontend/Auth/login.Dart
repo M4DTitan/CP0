@@ -124,10 +124,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await FirebaseAuth.instance
                                     .sendPasswordResetEmail(email: _email);
                               },
-                              title: 'RESET YOUR PASSWORD',
+                              title: 'Resetar password',
                               desc:
-                                  'Click on the button to reset your password',
-                              btnText: 'Reset Now',
+                                  'aperte aqui para resetar a password',
+                              btnText: 'Mudar agora',
                               context: context,
                             ).show();
                           },
