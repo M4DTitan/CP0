@@ -1,19 +1,24 @@
-import 'package:cp0flutter/frontend/projects/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart'; // Import Firebase Storage
 import 'firebase_options.dart';
 import 'package:cp0flutter/routes/routes.dart';
+import 'frontend/Auth/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize Firebase Storage
+  await FirebaseStorage.instance;
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: AllProjectsPage(),
+      home: HomeScreen(),
     );
   }
 }
